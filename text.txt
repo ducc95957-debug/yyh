@@ -1,116 +1,44 @@
--- ✅ MẪU CHUẨN CHO NGƯỜI MỚI | TÉO HUB 🍎
--- Giữ nguyên giao diện thật, chỉ thêm hướng dẫn 👈 ngay bên cạnh dòng cần sửa
+-- Tạo ScreenGui
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "ConcuUI"
+screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 
-repeat task.wait() until game:IsLoaded()
+-- Tạo Frame chính
+local mainFrame = Instance.new("Frame")
+mainFrame.Size = UDim2.new(0, 200, 0, 150)
+mainFrame.Position = UDim2.new(0.5, -100, 0.5, -75)
+mainFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+mainFrame.Parent = screenGui
 
--- 🟢 Nút mở menu chính
-local ScreenGui = Instance.new("ScreenGui")
-local ImageButton = Instance.new("ImageButton")
-local UICorner = Instance.new("UICorner")
-
-ScreenGui.Parent = game.CoreGui
-ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-
-ImageButton.Parent = ScreenGui
-ImageButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-ImageButton.BorderSizePixel = 0
-ImageButton.Position = UDim2.new(0.10615778, 0, 0.16217947, 0)
-ImageButton.Size = UDim2.new(0, 40, 0, 40)
-ImageButton.Draggable = true
-ImageButton.Image = "http://www.roblox.com/asset/?id=15059956542"  -- 👈 đổi ID ảnh nút mở menu tại đây (ảnh roblox)
-
-UICorner.CornerRadius = UDim.new(1, 10)
-UICorner.Parent = ImageButton
-
-ImageButton.MouseButton1Down:Connect(function()
-	game:GetService("VirtualInputManager"):SendKeyEvent(true, Enum.KeyCode.End, false, game)
-end)
-
--- 🟣 Giao diện Fluent
-local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
-repeat wait() until game:IsLoaded()
-
--- [[ TANK GAME UI & LEVEL SYSTEM BY GEMINI ]] --
-
-local player = game.Players.LocalPlayer
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-
--- 1. KHỞI TẠO DỮ LIỆU (Chạy phía Client để giả lập hoặc dùng Server nếu có quyền)
-local stats = player:FindFirstChild("Leaderstats") or Instance.new("Folder", player)
-stats.Name = "Leaderstats"
-
-local level = stats:FindFirstChild("Level") or Instance.new("IntValue", stats)
-level.Name = "Level"
-level.Value = 1
-
-local xp = stats:FindFirstChild("Experience") or Instance.new("IntValue", stats)
-xp.Name = "Experience"
-xp.Value = 0
-
-local upgradePoints = player:FindFirstChild("UpgradePoints") or Instance.new("IntValue", player)
-upgradePoints.Name = "UpgradePoints"
-upgradePoints.Value = 0
-
--- 2. LOGIC LÊN CẤP (Tối đa 100)
-xp.Changed:Connect(function(val)
-    local xpNeeded = level.Value * 100 -- Công thức XP
-    if val >= xpNeeded and level.Value < 100 then
-        xp.Value = val - xpNeeded
-        level.Value = level.Value + 1
-        upgradePoints.Value = upgradePoints.Value + 2 -- Tặng 2 điểm mỗi cấp
-        print("Chúc mừng! Bạn đạt cấp: " .. level.Value)
-    end
-end)
-
--- 3. TẠO GIAO DIỆN (UI) GIỐNG ẢNH MẪU
-local sg = Instance.new("ScreenGui", player.PlayerGui)
-sg.Name = "TankUpgradeUI"
-
-local frame = Instance.new("Frame", sg)
-frame.Size = UDim2.new(0, 220, 0, 320)
-frame.Position = UDim2.new(0, 10, 0.4, 0)
-frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-frame.BorderSizePixel = 2
-
-local title = Instance.new("TextLabel", frame)
+-- Tiêu đề UI
+local title = Instance.new("TextLabel")
+title.Text = "Menu: CONCU"
 title.Size = UDim2.new(1, 0, 0, 30)
-title.Text = "NÂNG CẤP XE TĂNG (Lv. 100)"
 title.TextColor3 = Color3.new(1, 1, 1)
-title.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+title.BackgroundTransparency = 1
+title.Parent = mainFrame
 
-local function createBtn(name, pos)
-    local btn = Instance.new("TextButton", frame)
-    btn.Name = name
-    btn.Size = UDim2.new(0.9, 0, 0, 35)
-    btn.Position = UDim2.new(0.05, 0, 0, 40 + (pos * 45))
-    btn.Text = "Nâng cấp " .. name
-    btn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-    btn.TextColor3 = Color3.new(1, 1, 1)
-    
-    btn.MouseButton1Click:Connect(function()
-        if upgradePoints.Value > 0 then
-            upgradePoints.Value -= 1
-            btn.Text = name .. " UPGRADED!"
-            wait(0.2)
-            btn.Text = "Nâng cấp " .. name
-        end
-    end)
-end
+-- Nút 1: Kill All (Giao diện)
+local btn1 = Instance.new("TextButton")
+btn1.Text = "Bật Diệt Player"
+btn1.Size = UDim2.new(0.8, 0, 0, 30)
+btn1.Position = UDim2.new(0.1, 0, 0.3, 0)
+btn1.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+btn1.Parent = mainFrame
 
-createBtn("Sát Thương", 0)
-createBtn("Tốc Độ Bắn", 1)
-createBtn("Máu Tối Đa", 2)
-createBtn("Tốc Độ Di Chuyển", 3)
+-- Nút 2: Tăng Sát Thương Bóng
+local btn2 = Instance.new("TextButton")
+btn2.Text = "Bóng Sát Thương Lớn"
+btn2.Size = UDim2.new(0.8, 0, 0, 30)
+btn2.Position = UDim2.new(0.1, 0, 0.6, 0)
+btn2.BackgroundColor3 = Color3.fromRGB(50, 200, 50)
+btn2.Parent = mainFrame
 
-local pointLabel = Instance.new("TextLabel", frame)
-pointLabel.Size = UDim2.new(1, 0, 0, 30)
-pointLabel.Position = UDim2.new(0, 0, 1, -30)
-pointLabel.Text = "Điểm: 0"
-pointLabel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-pointLabel.TextColor3 = Color3.new(1, 0.8, 0)
-
-upgradePoints.Changed:Connect(function()
-    pointLabel.Text = "Điểm nâng cấp: " .. upgradePoints.Value
+-- Sự kiện khi bấm nút (Chỉ hiển thị thông báo)
+btn1.MouseButton1Click:Connect(function()
+    print("Tính năng Diệt Player đã sẵn sàng (Cần logic Server để thực hiện)")
 end)
 
-print("Script Tank Game đã hoạt động!")
+btn2.MouseButton1Click:Connect(function()
+    print("Sát thương bóng đã được điều chỉnh (Client Side)")
+end)
